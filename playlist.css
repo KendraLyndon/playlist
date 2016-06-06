@@ -26,16 +26,24 @@ main {
   height: 78vh;
   width: 100%;
 }
-#album-covers {
+#covers {
+  margin-left: 17vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   width: 100%;
   height: 20vh;
   overflow: scroll;
 }
-#album-text {
-  width: 100%;
+.cover_img {
+  width: 12vh;
+  height: 12vh;
+  margin: 5px;
 }
 textarea {
   border: 2px solid black;
+  color: black;
+  font-size: 17px;
   margin: auto;
   width: 65%;
   height: 26vh;
@@ -61,7 +69,7 @@ footer {
   background-color: #686859;
 }
 p {
-  padding-top: 2vh;
+  padding-top: 10px;
   padding-left: 6vw;
   font-size: 19px;
 }
