@@ -3,29 +3,49 @@ $(document).ready(function(){
   var tracks = $('#tracks');
   var clear = $('#clear');
   var submit = $('#submit');
+  var userInput = $('#user-input');
   var findAlbums = $('#find-albums');
-  findAlbums.click(function(event){
+  var artists = $('#artist-choices');
+
+  $(findAlbums).click(function(event){
     event.preventDefault();
-    $.getJSON('https://lit-fortress-6467.herokuapp.com/object',function(data){
-      covers.html('');
-      var results = data.results;
-      for(var i=0;i<results.length;i++){
-        var cover = $('<div>');
-        cover.addClass('album');
-        cover.attr('id',results[i].id);
-        var image = $('<img>');
-        image.addClass('cover_img');
-        image.attr('src', 'images/'+results[i].cover_art);
-        image.appendTo(cover);
-        cover.appendTo(covers);
-      }
-      var album = $('.album');
-      album.on('click',function(){
-        for(var j=0;j<results.length;j++){
-          if(results[j].id === Number(this.id)){
-            tracks.append(`${results[j].artist}: ${results[j].title}\n`);
-          }
-        }
+    $(covers).html('');
+    $(artists).html('');
+    $.getJSON('https://api.spotify.com/v1/search?q='+userInput.val()+'&type=artist',function(data){
+      var results = data.artists.items;
+      console.log(results);
+      results.forEach(function(result){
+        var artist = document.createElement('p');
+        artist.className = 'artist';
+        artist.id = result.id;
+        $(artist).text(result.name);
+        $(artist).appendTo(artists);
+      })
+
+      $(artists).children().click(function(){
+        $(covers).html('');
+        $.getJSON('https://api.spotify.com/v1/artists/'+this.id+'/albums',function(data){
+          var albumResults = data.items;
+          albumResults.forEach(function(album){
+              var image = document.createElement('img');
+              image.className = 'cover_img';
+              image.src = album.images[0].url;
+              image.id = album.id;
+              $(image).appendTo(covers);
+          })
+          $(covers).children().click(function(){
+            $.getJSON('https://api.spotify.com/v1/albums/'+this.id+'/tracks',function(data){
+              var trackResults = data.items;
+              trackResults.forEach(function(result){
+                var track = document.createElement('p');
+                // var anchor = $('<a>');
+                track.innerHTML = result.name;
+                console.log(track.text);
+                $(track).appendTo(tracks);
+              })
+            })
+          })
+        })
       })
     })
   })
